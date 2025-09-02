@@ -1,39 +1,34 @@
 "use client";
 import { useForm } from "react-hook-form";
 
+type School = {
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  students: number;
+};
+
 export default function AddSchool() {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<School>();
 
-  const onSubmit = (data: any) => {
-    // Existing schools ni localStorage nundi theesukuni
-    const existingSchools = JSON.parse(localStorage.getItem("schools") || "[]");
-    // New school ni add cheyyi
+  const onSubmit = (data: School) => {
+    const existingSchools: School[] = JSON.parse(localStorage.getItem("schools") || "[]");
     existingSchools.push(data);
-    // Malli save cheyyi
     localStorage.setItem("schools", JSON.stringify(existingSchools));
-
     alert("School added successfully!");
-    reset(); // Form clear cheyyadaniki
+    reset();
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <h1>Add School</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input {...register("name", { required: true })} placeholder="School Name" />
-        <br />
-        <input {...register("address", { required: true })} placeholder="Address" />
-        <br />
-        <input {...register("city", { required: true })} placeholder="City" />
-        <br />
-        <input {...register("state", { required: true })} placeholder="State" />
-        <br />
-        <input type="number" {...register("contact", { required: true })} placeholder="Contact" />
-        <br />
-        <input type="email" {...register("email_id", { required: true })} placeholder="Email" />
-        <br />
-        <button type="submit">Add School</button>
-      </form>
-    </div>
+      <input {...register("name")} placeholder="Name" />
+      <input {...register("address")} placeholder="Address" />
+      <input {...register("city")} placeholder="City" />
+      <input {...register("state")} placeholder="State" />
+      <input type="number" {...register("students")} placeholder="No. of Students" />
+      <button type="submit">Add</button>
+    </form>
   );
 }
